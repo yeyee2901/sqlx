@@ -1,0 +1,57 @@
+definitions:
+  entity.Response:
+    properties:
+      msg:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /user:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Response'
+      summary: mengambil data-data user
+      tags:
+      - User
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Response'
+      summary: Membuat user baru
+      tags:
+      - User
+  /user/:id:
+    delete:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Response'
+      summary: Menghapus data user by ID
+      tags:
+      - User
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Response'
+      summary: mengambil data-data user berdasarkan ID
+      tags:
+      - User
+    put:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Response'
+      summary: mengubah data user berdasarkan ID
+      tags:
+      - User
+swagger: "2.0"

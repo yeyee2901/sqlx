@@ -1,0 +1,12 @@
+app:
+  listener: 127.0.0.1:8767
+  mode: development
+
+mysql:
+  username: yeyee
+  password: shredder
+  db: local_development
+  host: 192.168.100.16
+  port: 3306
+  minpool: 1
+  maxpool: 10
