@@ -1,4 +1,27 @@
 definitions:
+  datasource.CreateUserReq:
+    properties:
+      name:
+        type: string
+    type: object
+  datasource.User:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  entity.GetUsersResp:
+    properties:
+      total:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/datasource.User'
+        type: array
+    type: object
   entity.Response:
     properties:
       msg:
@@ -9,15 +32,31 @@ info:
 paths:
   /user:
     get:
+      parameters:
+      - description: Jika tidak memasukkan user ID maka akan get semua
+        in: query
+        name: id
+        type: integer
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/entity.GetUsersResp'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/entity.Response'
       summary: mengambil data-data user
       tags:
       - User
     post:
+      parameters:
+      - description: request body JSON
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/datasource.CreateUserReq'
       responses:
         "200":
           description: OK
@@ -26,8 +65,14 @@ paths:
       summary: Membuat user baru
       tags:
       - User
-  /user/:id:
+  /user/{id}:
     delete:
+      parameters:
+      - description: User ID (angka positif)
+        in: path
+        name: id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK
@@ -36,16 +81,13 @@ paths:
       summary: Menghapus data user by ID
       tags:
       - User
-    get:
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.Response'
-      summary: mengambil data-data user berdasarkan ID
-      tags:
-      - User
     put:
+      parameters:
+      - description: User ID (angka positif)
+        in: query
+        name: id
+        required: true
+        type: integer
       responses:
         "200":
           description: OK

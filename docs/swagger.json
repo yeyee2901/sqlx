@@ -10,9 +10,23 @@
                     "User"
                 ],
                 "summary": "mengambil data-data user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Jika tidak memasukkan user ID maka akan get semua",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.GetUsersResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/entity.Response"
                         }
@@ -24,6 +38,17 @@
                     "User"
                 ],
                 "summary": "Membuat user baru",
+                "parameters": [
+                    {
+                        "description": "request body JSON",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datasource.CreateUserReq"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -34,26 +59,21 @@
                 }
             }
         },
-        "/user/:id": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "mengambil data-data user berdasarkan ID",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Response"
-                        }
-                    }
-                }
-            },
+        "/user/{id}": {
             "put": {
                 "tags": [
                     "User"
                 ],
                 "summary": "mengubah data user berdasarkan ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID (angka positif)",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -68,6 +88,15 @@
                     "User"
                 ],
                 "summary": "Menghapus data user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID (angka positif)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -80,6 +109,42 @@
         }
     },
     "definitions": {
+        "datasource.CreateUserReq": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "datasource.User": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.GetUsersResp": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/datasource.User"
+                    }
+                }
+            }
+        },
         "entity.Response": {
             "type": "object",
             "properties": {

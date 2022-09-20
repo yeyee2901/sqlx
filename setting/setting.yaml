@@ -10,3 +10,4 @@ mysql:
   port: 3306
   minpool: 1
   maxpool: 10
+  parse_time: "true"

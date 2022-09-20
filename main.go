@@ -9,12 +9,13 @@ import (
 	"syscall"
 	"time"
 
-	"sqlx/config"
-	"sqlx/controller"
+	"sqlx/app/config"
+	"sqlx/app/controller"
 	"sqlx/docs"
-	"sqlx/middlewares"
+	"sqlx/app/middlewares"
 
 	"github.com/gin-gonic/gin"
+    _ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -38,12 +39,33 @@ func (T *App) initRouting() {
 }
 
 func (T *App) initSwagger() {
-	docs.SwaggerInfo_swagger.BasePath = "/"
-	docs.SwaggerInfo_swagger.Title = "SQLX di Golang"
-	docs.SwaggerInfo_swagger.Description = "Percobaan mapping object dari database menggunakan sqlx"
-	docs.SwaggerInfo_swagger.Version = "1.0"
-	docs.SwaggerInfo_swagger.Host = T.Config.App.Listener
-	docs.SwaggerInfo_swagger.Schemes = []string{"http", "https"}
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Title = "SQLX di Golang"
+	docs.SwaggerInfo.Description = "Percobaan mapping object dari database menggunakan sqlx"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = T.Config.App.Listener
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+}
+
+func (T *App) initDatabase() {
+    dbStringConn := fmt.Sprintf(
+        "%s:%s@tcp(%s:%d)/%s?parseTime=%s",
+        T.Config.DBConfig.Username,
+        T.Config.DBConfig.Password,
+        T.Config.DBConfig.Host,
+        T.Config.DBConfig.Port,
+        T.Config.DBConfig.DB,
+        T.Config.DBConfig.ParseTime,
+    )
+
+    db, err := sqlx.Connect("mysql", dbStringConn)
+    if err != nil {
+        panic(err)
+    }
+
+    T.DB = db
+    T.DB.SetMaxIdleConns(1)
+    T.DB.SetMaxOpenConns(10)
 }
 
 func main() {
@@ -54,6 +76,7 @@ func main() {
 	app.loadConfig()
 
 	// INIT: DB
+    app.initDatabase()
 
 	// INIT: gin
 	if app.Config.App.Mode == "production" {
