@@ -1,7 +1,7 @@
 package datasource
 
 import (
-	"sqlx/app/config"
+	"github.com/yeyee2901/sqlx/app/config"
 
 	"github.com/jmoiron/sqlx"
 )

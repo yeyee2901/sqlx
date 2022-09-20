@@ -9,10 +9,10 @@ import (
 	"syscall"
 	"time"
 
-	"sqlx/app/config"
-	"sqlx/app/controller"
-	"sqlx/docs"
-	"sqlx/app/middlewares"
+	"github.com/yeyee2901/sqlx/app/config"
+	"github.com/yeyee2901/sqlx/app/controller"
+	"github.com/yeyee2901/sqlx/docs"
+	"github.com/yeyee2901/sqlx/app/middlewares"
 
 	"github.com/gin-gonic/gin"
     _ "github.com/go-sql-driver/mysql"

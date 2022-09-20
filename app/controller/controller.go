@@ -3,10 +3,12 @@ package controller
 import (
 	"fmt"
 	"net/http"
-	"sqlx/app/config"
-	"sqlx/app/datasource"
-	"sqlx/app/entity"
 	"strconv"
+
+	"github.com/yeyee2901/sqlx/app/config"
+	"github.com/yeyee2901/sqlx/app/datasource"
+	"github.com/yeyee2901/sqlx/app/entity"
+
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"

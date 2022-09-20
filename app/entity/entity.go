@@ -1,6 +1,6 @@
 package entity
 
-import "sqlx/app/datasource"
+import "github.com/yeyee2901/sqlx/app/datasource"
 
 type Response struct {
 	Msg string `json:"msg"`

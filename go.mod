@@ -1,4 +1,4 @@
-module sqlx
+module github.com/yeyee2901/sqlx
 
 go 1.19
 
