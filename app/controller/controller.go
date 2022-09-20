@@ -42,7 +42,6 @@ func (T *Controller) InitRouting() {
 // @Router /user [get]
 // @Param id query int false "Jika tidak memasukkan user ID maka akan get semua"
 // @Success 200 {object} entity.GetUsersResp
-// @Failure 500 {object} entity.Response
 func (T *Controller) GetUser(ctx *gin.Context) {
 	ds := datasource.NewDatasource(T.Config, T.DB)
 
@@ -113,6 +112,7 @@ func (T *Controller) CreateUser(ctx *gin.Context) {
 			Msg: err.Error(),
 		}
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, resp)
+		return
 	}
 
 	userId, err := ds.CreateUser(&req)
@@ -121,6 +121,7 @@ func (T *Controller) CreateUser(ctx *gin.Context) {
 			Msg: err.Error(),
 		}
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, resp)
+		return
 	}
 
 	resp := entity.CreateUserResp{
@@ -128,6 +129,7 @@ func (T *Controller) CreateUser(ctx *gin.Context) {
 		Name: req.Name,
 	}
 	ctx.JSON(http.StatusOK, resp)
+	return
 }
 
 // DeleteUserById godoc
@@ -137,6 +139,8 @@ func (T *Controller) CreateUser(ctx *gin.Context) {
 // @Param id path int true "User ID (angka positif)"
 // @Success 200 {object} entity.Response
 func (T *Controller) DeleteUserById(ctx *gin.Context) {
+	ds := datasource.NewDatasource(T.Config, T.DB)
+
 	idStr := ctx.Param("id")
 	idInt, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -147,10 +151,21 @@ func (T *Controller) DeleteUserById(ctx *gin.Context) {
 		return
 	}
 
-	resp := entity.Response{
-		Msg: fmt.Sprintf("ID: %d", idInt),
+	rowsAffected, err := ds.DeleteUserById(idInt)
+	if err != nil {
+		resp := entity.Response{
+			Msg: err.Error(),
+		}
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, resp)
+		return
 	}
+
+	resp := entity.Response{
+		Msg: fmt.Sprintf("Sukses. %d rows affected.", rowsAffected),
+	}
+
 	ctx.JSON(http.StatusOK, resp)
+	return
 }
 
 // UpdateUserById godoc
@@ -169,6 +184,7 @@ func (T *Controller) UpdateUserById(ctx *gin.Context) {
 			Msg: err.Error(),
 		}
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, resp)
+		return
 	}
 
 	err = ds.UpdateUserById(&req)
@@ -177,10 +193,13 @@ func (T *Controller) UpdateUserById(ctx *gin.Context) {
 			Msg: err.Error(),
 		}
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, resp)
+		return
 	}
 
-    resp := entity.Response{
-        Msg: "Sukses",
-    }
-    ctx.JSON(http.StatusOK, resp)
+	resp := entity.Response{
+		Msg: "Sukses",
+	}
+
+	ctx.JSON(http.StatusOK, resp)
+	return
 }

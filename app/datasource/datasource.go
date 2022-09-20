@@ -102,3 +102,29 @@ func (T *Datasource) UpdateUserById(updatedData *UpdateUserByIdReq) (err error) 
 
 	return nil
 }
+
+// implementasi lain bisa pakai MustExec, argumen nya bentuknya di
+// kasih placeholder berupa '?'
+func (T *Datasource) DeleteUserById(id int) (rowsAffected int64, err error){
+	tx := T.DB.MustBegin()
+	q := `
+        DELETE FROM users 
+        WHERE id = ?
+    `
+	result := tx.MustExec(q, id)
+
+    // jangan lupa di commit :)
+    // jangan seperti seseorang yang tidak commit dalam relationship nya :)))
+    err = tx.Commit()
+    if err != nil {
+        tx.Rollback()
+        return
+    }
+
+    rowsAffected, err = result.RowsAffected()
+    if err != nil {
+        tx.Rollback()
+        return
+    }
+	return
+}
