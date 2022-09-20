@@ -1,0 +1,49 @@
+version: '2.7'
+
+services:
+  db:
+    container_name: db
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+      
+    # NOTE: use of "mysql_native_password" is not recommended 
+    # SEE: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+
+    # restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: golang_sqlx
+      MYSQL_USER: golang_sqlx
+      MYSQL_PASSWORD: kitagawa_marin_chan
+
+    # map for persistent data
+    # <host file>:<container file>
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    networks:
+      - app_network
+
+    ports:
+      - 13306:3306
+
+  golang_api_sqlx:
+    container_name: golang_api_sqlx
+    build:
+      context: .
+      dockerfile: app.Dockerfile
+    networks:
+      - app_network
+    ports:
+      - 18767:8767
+    volumes:
+      - .:/app/
+
+networks:
+  app_network:
+
+volumes:
+  mysql_data:
