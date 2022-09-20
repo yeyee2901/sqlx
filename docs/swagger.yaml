@@ -4,9 +4,16 @@ definitions:
       name:
         type: string
     type: object
+  datasource.UpdateUserByIdReq:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   datasource.User:
     properties:
-      createdAt:
+      created_at:
         type: string
       id:
         type: integer
@@ -65,6 +72,22 @@ paths:
       summary: Membuat user baru
       tags:
       - User
+    put:
+      parameters:
+      - description: User ID (angka positif)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/datasource.UpdateUserByIdReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Response'
+      summary: mengubah data user berdasarkan ID
+      tags:
+      - User
   /user/{id}:
     delete:
       parameters:
@@ -79,21 +102,6 @@ paths:
           schema:
             $ref: '#/definitions/entity.Response'
       summary: Menghapus data user by ID
-      tags:
-      - User
-    put:
-      parameters:
-      - description: User ID (angka positif)
-        in: query
-        name: id
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.Response'
-      summary: mengubah data user berdasarkan ID
       tags:
       - User
 swagger: "2.0"

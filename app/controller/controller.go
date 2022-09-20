@@ -9,7 +9,6 @@ import (
 	"github.com/yeyee2901/sqlx/app/datasource"
 	"github.com/yeyee2901/sqlx/app/entity"
 
-
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
@@ -33,7 +32,7 @@ func (T *Controller) InitRouting() {
 	// yang membedakan get all & get sesuai kriteria dari params nya aja
 	T.Router.GET("/user", T.GetUser)
 	T.Router.POST("/user", T.CreateUser)
-	T.Router.PUT("/user/:id", T.UpdateUserById)
+	T.Router.PUT("/user", T.UpdateUserById)
 	T.Router.DELETE("/user/:id", T.DeleteUserById)
 }
 
@@ -157,22 +156,31 @@ func (T *Controller) DeleteUserById(ctx *gin.Context) {
 // UpdateUserById godoc
 // @Tags User
 // @Summary mengubah data user berdasarkan ID
-// @Router /user/{id} [put]
-// @Param id query int true "User ID (angka positif)"
+// @Router /user [put]
+// @Param request body datasource.UpdateUserByIdReq true "User ID (angka positif)"
 // @Success 200 {object} entity.Response
 func (T *Controller) UpdateUserById(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	idInt, err := strconv.Atoi(idStr)
+	ds := datasource.NewDatasource(T.Config, T.DB)
+	var req datasource.UpdateUserByIdReq
+
+	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		resp := entity.Response{
 			Msg: err.Error(),
 		}
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, resp)
-		return
 	}
 
-	resp := entity.Response{
-		Msg: fmt.Sprintf("ID: %d", idInt),
+	err = ds.UpdateUserById(&req)
+	if err != nil {
+		resp := entity.Response{
+			Msg: err.Error(),
+		}
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, resp)
 	}
-	ctx.JSON(http.StatusOK, resp)
+
+    resp := entity.Response{
+        Msg: "Sukses",
+    }
+    ctx.JSON(http.StatusOK, resp)
 }

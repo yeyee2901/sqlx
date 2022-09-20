@@ -1,6 +1,7 @@
 package datasource
 
 import (
+
 	"github.com/yeyee2901/sqlx/app/config"
 
 	"github.com/jmoiron/sqlx"
@@ -73,8 +74,31 @@ func (T *Datasource) CreateUser(newUser *CreateUserReq) (userId int64, err error
 		return
 	}
 
-    // get user ID (best practice backend, saat create user, kembalikan ID yg
-    // di generate)
-    userId, err = r.LastInsertId()
-    return
+	// get user ID (best practice backend, saat create user, kembalikan ID yg
+	// di generate)
+	userId, err = r.LastInsertId()
+	return
+}
+
+// kasus nya sama kayak insert, bedanya query nya update saja
+func (T *Datasource) UpdateUserById(updatedData *UpdateUserByIdReq) (err error) {
+	tx := T.DB.MustBegin()
+	q := `
+        UPDATE users 
+        SET name = :name
+        WHERE id = :id
+    `
+	tx.NamedExec(q, updatedData)
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+
+	return nil
 }

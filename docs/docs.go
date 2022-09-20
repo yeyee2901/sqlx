@@ -45,6 +45,31 @@ const docTemplate = `{
                     }
                 }
             },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "mengubah data user berdasarkan ID",
+                "parameters": [
+                    {
+                        "description": "User ID (angka positif)",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/datasource.UpdateUserByIdReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "User"
@@ -72,29 +97,6 @@ const docTemplate = `{
             }
         },
         "/user/{id}": {
-            "put": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "mengubah data user berdasarkan ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID (angka positif)",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Response"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "tags": [
                     "User"
@@ -129,10 +131,21 @@ const docTemplate = `{
                 }
             }
         },
+        "datasource.UpdateUserByIdReq": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "datasource.User": {
             "type": "object",
             "properties": {
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
