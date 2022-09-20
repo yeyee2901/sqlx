@@ -14,7 +14,29 @@ git clone https://github.com/yeyee2901/sqlx.git
 ```bash
 go mod download && go verify
 ```
-3. Jalankan bisa di compile dulu / langsung di go run
+3. Sesuaikan file `setting.yaml` terutama bagian mysql profile nya
+```yaml
+mysql:
+  username: your_username
+  password: your_password
+  db: local_development
+  host: 192.168.100.16
+  port: 3306
+  minpool: 1
+  maxpool: 10
+  parse_time: "true" # wajib true apabila ingin banding ke objek time.Time
+```
+4. Migrate database (script migrate ada di `./db/migration.sql`)
+```sql
+CREATE TABLE `users` (
+    id INT auto_increment,
+    name VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (`id`)
+);
+```
+5. Jalankan bisa di compile dulu / langsung di go run
 ```bash
 go run .    # Jalan langsung
 

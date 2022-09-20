@@ -3,8 +3,8 @@ app:
   mode: development
 
 mysql:
-  username: yeyee
-  password: shredder
+  username: your_username
+  password: your_password
   db: local_development
   host: 192.168.100.16
   port: 3306
