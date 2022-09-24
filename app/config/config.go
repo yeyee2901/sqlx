@@ -21,10 +21,9 @@ type MySQLMeta struct {
 	Password  string `yaml:"password"`
 	DB        string `yaml:"db"`
 	Host      string `yaml:"host"`
-	Port      int    `yaml:"port"`
 	Minpool   int    `yaml:"minpool"`
 	Maxpool   int    `yaml:"maxpool"`
-	ParseTime string `yaml:"parse_time"`
+	ParseTime bool   `yaml:"parse_time"`
 }
 
 func LoadConfig(path string) (config *Config) {

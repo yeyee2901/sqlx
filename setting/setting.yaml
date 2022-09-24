@@ -6,8 +6,7 @@ mysql:
   username: your_username
   password: your_password
   db: local_development
-  host: 192.168.100.16
-  port: 3306
+  host: 192.168.100.12:3306
   minpool: 1
   maxpool: 10
-  parse_time: "true"
+  parse_time: true

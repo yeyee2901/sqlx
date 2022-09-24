@@ -11,11 +11,11 @@ import (
 
 	"github.com/yeyee2901/sqlx/app/config"
 	"github.com/yeyee2901/sqlx/app/controller"
-	"github.com/yeyee2901/sqlx/docs"
 	"github.com/yeyee2901/sqlx/app/middlewares"
+	"github.com/yeyee2901/sqlx/docs"
 
 	"github.com/gin-gonic/gin"
-    _ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -48,24 +48,24 @@ func (T *App) initSwagger() {
 }
 
 func (T *App) initDatabase() {
-    dbStringConn := fmt.Sprintf(
-        "%s:%s@tcp(%s:%d)/%s?parseTime=%s",
-        T.Config.DBConfig.Username,
-        T.Config.DBConfig.Password,
-        T.Config.DBConfig.Host,
-        T.Config.DBConfig.Port,
-        T.Config.DBConfig.DB,
-        T.Config.DBConfig.ParseTime,
-    )
+	dsName := mysql.Config{
+		User:                 T.Config.DBConfig.Username,
+		Passwd:               T.Config.DBConfig.Password,
+		Net:                  "tcp",
+		Addr:                 T.Config.DBConfig.Host,
+		DBName:               T.Config.DBConfig.DB,
+		ParseTime:            T.Config.DBConfig.ParseTime,
+		AllowNativePasswords: true,
+	}
 
-    db, err := sqlx.Connect("mysql", dbStringConn)
-    if err != nil {
-        panic(err)
-    }
+	db, err := sqlx.Connect("mysql", dsName.FormatDSN())
+	if err != nil {
+		panic(err)
+	}
 
-    T.DB = db
-    T.DB.SetMaxIdleConns(1)
-    T.DB.SetMaxOpenConns(10)
+	T.DB = db
+	T.DB.SetMaxIdleConns(1)
+	T.DB.SetMaxOpenConns(10)
 }
 
 func main() {
@@ -76,7 +76,7 @@ func main() {
 	app.loadConfig()
 
 	// INIT: DB
-    app.initDatabase()
+	app.initDatabase()
 
 	// INIT: gin
 	if app.Config.App.Mode == "production" {
@@ -84,8 +84,8 @@ func main() {
 	}
 	router := gin.Default()
 
-    // middlewares
-    router.Use(middlewares.CORS())
+	// middlewares
+	router.Use(middlewares.CORS())
 
 	app.Router = router
 	app.initRouting()
@@ -105,7 +105,7 @@ func main() {
 		WriteTimeout: 65 * time.Second,
 	}
 
-    // berdasarkan docs gin: 
+	// berdasarkan docs gin:
 	go func() {
 		// catch error nya in case nge crash
 		err := listener.ListenAndServe()
