@@ -34,13 +34,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.GetUsersResp"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/entity.Response"
+                            "$ref": "#/definitions/user.GetUserResp"
                         }
                     }
                 }
@@ -57,7 +51,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/datasource.UpdateUserByIdReq"
+                            "$ref": "#/definitions/user.UpdateUserByIdReq"
                         }
                     }
                 ],
@@ -82,7 +76,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/datasource.CreateUserReq"
+                            "$ref": "#/definitions/user.CreateUserReq"
                         }
                     }
                 ],
@@ -123,7 +117,18 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "datasource.CreateUserReq": {
+        "entity.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.CreateUserReq": {
             "type": "object",
             "properties": {
                 "name": {
@@ -131,7 +136,21 @@ const docTemplate = `{
                 }
             }
         },
-        "datasource.UpdateUserByIdReq": {
+        "user.GetUserResp": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.User"
+                    }
+                }
+            }
+        },
+        "user.UpdateUserByIdReq": {
             "type": "object",
             "properties": {
                 "id": {
@@ -142,7 +161,7 @@ const docTemplate = `{
                 }
             }
         },
-        "datasource.User": {
+        "user.User": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -152,28 +171,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.GetUsersResp": {
-            "type": "object",
-            "properties": {
-                "total": {
-                    "type": "integer"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/datasource.User"
-                    }
-                }
-            }
-        },
-        "entity.Response": {
-            "type": "object",
-            "properties": {
-                "msg": {
                     "type": "string"
                 }
             }
