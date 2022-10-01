@@ -12,21 +12,21 @@ type User struct {
 	CreatedAt time.Time `db:"created_at" json:"created_at"`
 }
 
-type GetUserResp struct {
+type RespGetUser struct {
 	Total int    `json:"total"`
 	Users []User `json:"users"`
 }
 
-type CreateUserReq struct {
+type ReqCreateUser struct {
 	Name string `json:"name"`
 }
 
-type CreateUserResp struct {
+type RespCreateUser struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 }
 
-type UpdateUserByIdReq struct {
+type ReqUpdateUserById struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
