@@ -5,6 +5,25 @@
 - [Yaml v2](https://github.com/go-yaml/yaml/tree/v2.4.0) - Go package for processing yaml files
 - [Sqlx](https://github.com/jmoiron/sqlx) - a package which provides a set of extensions on Go's builtin `database/sql` package
 
+## Application Structure
+```
+app
+├── config              // config
+│   └── config.go       // logics to load the setting.yaml
+├── controller          // routing, might change it to 'service', karena
+│   └── controller.go   // package tidak menampung logic, hanya definisi routing & memanggil service lain
+├── datasource          // koneksi ke datasource (database)
+│   ├── datasource.go   // logics stored here
+│   └── entity.go       // models generic untuk datasource, currently empty
+├── entity              // generic models yang bisa digunakan dimana saja
+│   └── entity.go
+├── middlewares         // middlewares
+│   └── middlewares.go  // untuk sementara hanya CORS supaya swagger jalan
+└── user                // user management logic
+    ├── entity.go       // models, isinya user model dan req & resp yg berhubungan dgn user
+    └── user.go         // logics stored here
+```
+
 ## How to try this project
 1. Clone repository:
 ```bash
@@ -20,8 +39,8 @@ mysql:
   username: your_username
   password: your_password
   db: local_development
-  host: 192.168.100.16
-  port: 3306
+  host: 127.0.0.1
+  port: 30000
   minpool: 1
   maxpool: 10
   parse_time: "true" # wajib true apabila ingin banding ke objek time.Time
@@ -43,6 +62,11 @@ go run .    # Jalan langsung
 go build -o compiled # di compile dulu
 ./compiled
 ```
+6. Buka browser dan akses ke IP yang ada di `setting.yaml` untuk mengakses swagger supaya bisa coba-coba API nya
+```
+http://localhost:8767/swagger/index.html
+```
+7. Have fun trying!
 
-You can see the source code, I put comments almost everywhere that needs explanation.
+You can see the source code, I put comments almost everywhere that might need explanation.
 Welcome to the world of Go, sir.
