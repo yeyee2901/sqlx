@@ -46,12 +46,9 @@ func (T *Controller) InitRouting() {
 // @Success 200 {object} user.RespGetUser
 func (T *Controller) GetUser(ctx *gin.Context) {
 	ds := datasource.NewDatasource(T.Config, T.DB)
-	userService := user.NewUserService(ds)
+	userService := user.NewUserService(ds, ctx)
 
-	// cek query string
-	id := ctx.Query("id")
-
-	users, errResp := userService.GetUser(ctx, id)
+	users, errResp := userService.GetUser()
 
 	if errResp.HttpStatus != http.StatusOK {
 		ctx.AbortWithStatusJSON(errResp.HttpStatus, errResp.Details)
@@ -70,9 +67,9 @@ func (T *Controller) GetUser(ctx *gin.Context) {
 // @Success 200 {object} user.RespCreateUser
 func (T *Controller) CreateUser(ctx *gin.Context) {
     ds := datasource.NewDatasource(T.Config, T.DB)
-    userService := user.NewUserService(ds)
+    userService := user.NewUserService(ds, ctx)
 
-    resp, errResp := userService.CreateUser(ctx)
+    resp, errResp := userService.CreateUser()
     if errResp.HttpStatus != http.StatusOK {
         ctx.AbortWithStatusJSON(errResp.HttpStatus, errResp.Details)
         return

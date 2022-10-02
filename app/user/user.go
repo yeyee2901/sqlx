@@ -11,15 +11,20 @@ import (
 
 type UserService struct {
 	DataSource *datasource.DataSource
+    GinContext *gin.Context
 }
 
-func NewUserService(ds *datasource.DataSource) *UserService {
+func NewUserService(ds *datasource.DataSource, ctx *gin.Context) *UserService {
 	return &UserService{
 		ds,
+        ctx,
 	}
 }
 
-func (us *UserService) GetUser(ctx *gin.Context, id string) (users []User, errResp entity.ResponseWithHTTPStatus) {
+func (us *UserService) GetUser() (users []User, errResp entity.ResponseWithHTTPStatus) {
+	// cek query string
+	id := us.GinContext.Query("id")
+
 	// case user tidak masukin id
 	// maka get all user
 	if len(id) == 0 {
@@ -57,9 +62,9 @@ func (us *UserService) GetUser(ctx *gin.Context, id string) (users []User, errRe
 	return
 }
 
-func (us *UserService) CreateUser(ctx *gin.Context) (newUser RespCreateUser, errResp entity.ResponseWithHTTPStatus) {
+func (us *UserService) CreateUser() (newUser RespCreateUser, errResp entity.ResponseWithHTTPStatus) {
 	var req ReqCreateUser
-	err := ctx.ShouldBindJSON(&req)
+	err := us.GinContext.ShouldBindJSON(&req)
 	if err != nil {
 		errResp.HttpStatus = http.StatusBadRequest
 		errResp.Details.Code = API_CODE_USER
