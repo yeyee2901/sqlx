@@ -10,6 +10,8 @@ definitions:
     properties:
       name:
         type: string
+    required:
+    - name
     type: object
   user.ReqUpdateUserById:
     properties:
@@ -17,6 +19,9 @@ definitions:
         type: integer
       name:
         type: string
+    required:
+    - id
+    - name
     type: object
   user.RespCreateUser:
     properties:

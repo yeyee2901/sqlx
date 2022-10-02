@@ -1,7 +1,6 @@
 package datasource
 
 import (
-
 	"github.com/yeyee2901/sqlx/app/config"
 
 	"github.com/jmoiron/sqlx"
@@ -21,14 +20,14 @@ func NewDatasource(config *config.Config, db *sqlx.DB) *DataSource {
 
 // kalau select nya semua, bisa langsung pakai .Select(), karena bisa langsung
 // di bind ke struct array. kasus ini untuk yang expected return result nya > 1
-func (T *DataSource) GetAllUsers(users interface{}) (err error){
+func (T *DataSource) GetAllUsers(users interface{}) (err error) {
 	q := `
         SELECT id,name,created_at FROM users;
     `
 	if err := T.DB.Select(users, q); err != nil {
 		return err
 	}
-	return 
+	return
 }
 
 // untuk pengambilan data yang sifatnya pasti kembali 1 row, maka lebih
@@ -102,7 +101,7 @@ func (T *DataSource) UpdateUserById(updatedData interface{}) (err error) {
 
 // implementasi lain bisa pakai MustExec, argumen nya bentuknya di
 // kasih placeholder berupa '?'
-func (T *DataSource) DeleteUserById(id int) (rowsAffected int64, err error){
+func (T *DataSource) DeleteUserById(id int) (rowsAffected int64, err error) {
 	tx := T.DB.MustBegin()
 	q := `
         DELETE FROM users 
@@ -110,18 +109,18 @@ func (T *DataSource) DeleteUserById(id int) (rowsAffected int64, err error){
     `
 	result := tx.MustExec(q, id)
 
-    // jangan lupa di commit :)
-    // jangan seperti seseorang yang tidak commit dalam relationship nya :)))
-    err = tx.Commit()
-    if err != nil {
-        tx.Rollback()
-        return
-    }
+	// jangan lupa di commit :)
+	// jangan seperti seseorang yang tidak commit dalam relationship nya :)))
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return
+	}
 
-    rowsAffected, err = result.RowsAffected()
-    if err != nil {
-        tx.Rollback()
-        return
-    }
+	rowsAffected, err = result.RowsAffected()
+	if err != nil {
+		tx.Rollback()
+		return
+	}
 	return
 }

@@ -14,7 +14,7 @@ type User struct {
 
 type ReqGetUser struct {
 	// optional, should not be forced to pass in
-    // bentuknya harus string pula :')
+	// bentuknya harus string pula :')
 	Id string `form:"id"`
 }
 
@@ -24,7 +24,7 @@ type RespGetUser struct {
 }
 
 type ReqCreateUser struct {
-	Name string `json:"name"`
+	Name string `json:"name" binding:"required"`
 }
 
 type RespCreateUser struct {
@@ -33,6 +33,6 @@ type RespCreateUser struct {
 }
 
 type ReqUpdateUserById struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
+	Id   int    `json:"id" binding:"required"`
+	Name string `json:"name" binding:"required"`
 }

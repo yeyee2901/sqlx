@@ -130,6 +130,9 @@ const docTemplate = `{
         },
         "user.ReqCreateUser": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -138,6 +141,10 @@ const docTemplate = `{
         },
         "user.ReqUpdateUserById": {
             "type": "object",
+            "required": [
+                "id",
+                "name"
+            ],
             "properties": {
                 "id": {
                     "type": "integer"

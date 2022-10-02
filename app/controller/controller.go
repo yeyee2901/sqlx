@@ -1,5 +1,3 @@
-// TODO: ------
-// - UpdateUserById
 package controller
 
 import (
@@ -54,7 +52,7 @@ func (T *Controller) GetUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, users)
-    return
+	return
 }
 
 // CreateUser godoc
@@ -64,17 +62,17 @@ func (T *Controller) GetUser(ctx *gin.Context) {
 // @Param request body user.ReqCreateUser true "request body JSON"
 // @Success 200 {object} user.RespCreateUser
 func (T *Controller) CreateUser(ctx *gin.Context) {
-    ds := datasource.NewDatasource(T.Config, T.DB)
-    userService := user.NewUserService(ds, ctx)
+	ds := datasource.NewDatasource(T.Config, T.DB)
+	userService := user.NewUserService(ds, ctx)
 
-    resp, errResp := userService.CreateUser()
-    if errResp.HttpStatus != http.StatusOK {
-        ctx.AbortWithStatusJSON(errResp.HttpStatus, errResp.Details)
-        return
-    }
+	resp, errResp := userService.CreateUser()
+	if errResp.HttpStatus != http.StatusOK {
+		ctx.AbortWithStatusJSON(errResp.HttpStatus, errResp.Details)
+		return
+	}
 
-    ctx.JSON(http.StatusOK, resp)
-    return
+	ctx.JSON(http.StatusOK, resp)
+	return
 }
 
 // DeleteUserById godoc
@@ -84,27 +82,34 @@ func (T *Controller) CreateUser(ctx *gin.Context) {
 // @Param id path int true "User ID (angka positif)"
 // @Success 200 {object} entity.Response
 func (T *Controller) DeleteUserById(ctx *gin.Context) {
-    ds := datasource.NewDatasource(T.Config, T.DB)
-    userService := user.NewUserService(ds, ctx)
+	ds := datasource.NewDatasource(T.Config, T.DB)
+	userService := user.NewUserService(ds, ctx)
 
-    errResp := userService.DeleteUserById()
-    if errResp.HttpStatus != http.StatusOK {
-        ctx.AbortWithStatusJSON(errResp.HttpStatus, errResp.Details)
-        return
-    }
+	errResp := userService.DeleteUserById()
+	if errResp.HttpStatus != http.StatusOK {
+		ctx.AbortWithStatusJSON(errResp.HttpStatus, errResp.Details)
+		return
+	}
 
-    ctx.JSON(http.StatusOK, errResp.Details)
-    return
+	ctx.JSON(http.StatusOK, errResp.Details)
+	return
 }
 
 // UpdateUserById godoc
 // @Tags User
 // @Summary mengubah data user berdasarkan ID
 // @Router /user [put]
-// @Param request body user.ReqUpdateUserById true "User ID (angka positif)"
+// @Param request body user.ReqUpdateUserById true "request body"
 // @Success 200 {object} entity.Response
 func (T *Controller) UpdateUserById(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{
-		"msg": "in progress",
-	})
+	ds := datasource.NewDatasource(T.Config, T.DB)
+	userService := user.NewUserService(ds, ctx)
+
+	errResp := userService.UpdateUserById()
+	if errResp.HttpStatus != http.StatusOK {
+		ctx.AbortWithStatusJSON(errResp.HttpStatus, errResp.Details)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, errResp.Details)
 }
