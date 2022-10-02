@@ -43,7 +43,7 @@ func (T *Controller) InitRouting() {
 // @Summary mengambil data-data user
 // @Router /user [get]
 // @Param id query int false "Jika tidak memasukkan user ID maka akan get semua"
-// @Success 200 {object} user.GetUserResp
+// @Success 200 {object} user.RespGetUser
 func (T *Controller) GetUser(ctx *gin.Context) {
 	ds := datasource.NewDatasource(T.Config, T.DB)
 	userService := user.NewUserService(ds)
@@ -59,18 +59,27 @@ func (T *Controller) GetUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, users)
+    return
 }
 
 // CreateUser godoc
 // @Tags User
 // @Summary Membuat user baru
 // @Router /user [post]
-// @Param request body user.CreateUserReq true "request body JSON"
-// @Success 200 {object} entity.Response
+// @Param request body user.ReqCreateUser true "request body JSON"
+// @Success 200 {object} user.RespCreateUser
 func (T *Controller) CreateUser(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{
-		"msg": "in progress",
-	})
+    ds := datasource.NewDatasource(T.Config, T.DB)
+    userService := user.NewUserService(ds)
+
+    resp, errResp := userService.CreateUser(ctx)
+    if errResp.HttpStatus != http.StatusOK {
+        ctx.AbortWithStatusJSON(errResp.HttpStatus, errResp.Details)
+        return
+    }
+
+    ctx.JSON(http.StatusOK, resp)
+    return
 }
 
 // DeleteUserById godoc
@@ -89,7 +98,7 @@ func (T *Controller) DeleteUserById(ctx *gin.Context) {
 // @Tags User
 // @Summary mengubah data user berdasarkan ID
 // @Router /user [put]
-// @Param request body user.UpdateUserByIdReq true "User ID (angka positif)"
+// @Param request body user.ReqUpdateUserById true "User ID (angka positif)"
 // @Success 200 {object} entity.Response
 func (T *Controller) UpdateUserById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{

@@ -34,7 +34,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.GetUserResp"
+                            "$ref": "#/definitions/user.RespGetUser"
                         }
                     }
                 }
@@ -51,7 +51,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.UpdateUserByIdReq"
+                            "$ref": "#/definitions/user.ReqUpdateUserById"
                         }
                     }
                 ],
@@ -76,7 +76,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.CreateUserReq"
+                            "$ref": "#/definitions/user.ReqCreateUser"
                         }
                     }
                 ],
@@ -84,7 +84,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Response"
+                            "$ref": "#/definitions/user.RespCreateUser"
                         }
                     }
                 }
@@ -128,7 +128,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user.CreateUserReq": {
+        "user.ReqCreateUser": {
             "type": "object",
             "properties": {
                 "name": {
@@ -136,7 +136,29 @@ const docTemplate = `{
                 }
             }
         },
-        "user.GetUserResp": {
+        "user.ReqUpdateUserById": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.RespCreateUser": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.RespGetUser": {
             "type": "object",
             "properties": {
                 "total": {
@@ -147,17 +169,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/user.User"
                     }
-                }
-            }
-        },
-        "user.UpdateUserByIdReq": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
                 }
             }
         },

@@ -3,7 +3,7 @@ package user
 import "time"
 
 const (
-    API_CODE_USER = "01"
+	API_CODE_USER = "01"
 )
 
 type User struct {
@@ -22,7 +22,7 @@ type ReqCreateUser struct {
 }
 
 type RespCreateUser struct {
-	Id   string `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
