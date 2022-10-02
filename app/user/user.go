@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/yeyee2901/sqlx/app/datasource"
@@ -23,11 +24,27 @@ func NewUserService(ds *datasource.DataSource, ctx *gin.Context) *UserService {
 
 func (us *UserService) GetUser() (users []User, errResp entity.ResponseWithHTTPStatus) {
 	// cek query string
-	id := us.GinContext.Query("id")
+    var reqQuery ReqGetUser
+    err := us.GinContext.ShouldBind(&reqQuery)
+
+    // lets just handle the error :)
+    if err != nil {
+        errResp.HttpStatus = http.StatusBadRequest
+        errResp.Details.Code = API_CODE_USER
+        errResp.Details.Msg = fmt.Sprintf("Bad Request - %s", err.Error())
+    }
 
 	// case user tidak masukin id
 	// maka get all user
-	if len(id) == 0 {
+	if len(reqQuery.Id) == 0 {
+        // cek jika user memasukkan nilai floating
+        _, err = strconv.ParseInt(reqQuery.Id, 10, 0)
+        if err != nil {
+			errResp.HttpStatus = http.StatusBadRequest
+			errResp.Details.Code = API_CODE_USER
+			errResp.Details.Msg = fmt.Sprintf("Bad Request - User ID must be an integer")
+        }
+
 		err := us.DataSource.GetAllUsers(&users)
 
 		if err != nil {
@@ -46,7 +63,7 @@ func (us *UserService) GetUser() (users []User, errResp entity.ResponseWithHTTPS
 	// kasus lain ketika user memasukkan id,
 	// maka ambil yang id nya sesuai saja
 	var singleUser User
-	err := us.DataSource.GetUserById(&singleUser, id)
+	err = us.DataSource.GetUserById(&singleUser, reqQuery.Id)
 
 	// kalau error != nil berarti besar kemungkinan user dengan id tersebut tidak ada
 	if err != nil {

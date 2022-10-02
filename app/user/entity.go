@@ -12,6 +12,12 @@ type User struct {
 	CreatedAt time.Time `db:"created_at" json:"created_at"`
 }
 
+type ReqGetUser struct {
+	// optional, should not be forced to pass in
+    // bentuknya harus string pula :')
+	Id string `form:"id"`
+}
+
 type RespGetUser struct {
 	Total int    `json:"total"`
 	Users []User `json:"users"`
