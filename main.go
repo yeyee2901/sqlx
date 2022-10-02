@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -60,8 +61,12 @@ func (T *App) initDatabase() {
 
 	db, err := sqlx.Connect("mysql", dsName.FormatDSN())
 	if err != nil {
-		panic(err)
+		log.Fatal("[DB INIT] ", err.Error())
 	}
+
+    if db == nil {
+		log.Fatal("[DB INIT] Database is dead. Make sure the host is alive!")
+    }
 
 	T.DB = db
 	T.DB.SetMaxIdleConns(1)
