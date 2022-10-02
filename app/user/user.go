@@ -32,6 +32,7 @@ func (us *UserService) GetUser() (users []User, errResp entity.ResponseWithHTTPS
         errResp.HttpStatus = http.StatusBadRequest
         errResp.Details.Code = API_CODE_USER
         errResp.Details.Msg = fmt.Sprintf("Bad Request - %s", err.Error())
+        return
     }
 
 	// case user tidak masukin id
@@ -42,7 +43,7 @@ func (us *UserService) GetUser() (users []User, errResp entity.ResponseWithHTTPS
         if err != nil {
 			errResp.HttpStatus = http.StatusBadRequest
 			errResp.Details.Code = API_CODE_USER
-			errResp.Details.Msg = fmt.Sprintf("Bad Request - User ID must be an integer")
+			errResp.Details.Msg = fmt.Sprintf("Bad Request - User 'id' must be an integer")
         }
 
 		err := us.DataSource.GetAllUsers(&users)
@@ -93,7 +94,7 @@ func (us *UserService) CreateUser() (newUser RespCreateUser, errResp entity.Resp
     if len(req.Name) < 1 {
 		errResp.HttpStatus = http.StatusBadRequest
 		errResp.Details.Code = API_CODE_USER
-		errResp.Details.Msg = "Bad Request. User name must not be an empty string"
+		errResp.Details.Msg = "Bad Request. User 'name' must not be an empty string"
 		return
     }
 
@@ -110,6 +111,50 @@ func (us *UserService) CreateUser() (newUser RespCreateUser, errResp entity.Resp
     newUser.Id = int(userId)
     newUser.Name = req.Name
     errResp.HttpStatus = http.StatusOK
+
+    return
+}
+
+func (us *UserService) DeleteUserById() (errResp entity.ResponseWithHTTPStatus){
+    id := us.GinContext.Param("id")
+
+    // handle error in case terjadi keanehan dengan path params :)
+    if len(id) < 1  {
+        errResp.HttpStatus = http.StatusBadRequest
+        errResp.Details.Code = API_CODE_USER
+        errResp.Details.Msg = fmt.Sprintf("Bad Request - Invalid mandatory field 'id'")
+        return
+    }
+
+    // handle jika dimasukkan parameter nilai floating
+    idInteger, err := strconv.ParseInt(id, 10, 0)
+    if err != nil {
+        errResp.HttpStatus = http.StatusBadRequest
+        errResp.Details.Code = API_CODE_USER
+        errResp.Details.Msg = fmt.Sprintf("Bad Request - user 'id' must be an integer")
+        return
+    }
+
+    // have to typecast here
+    rowsAffected, err := us.DataSource.DeleteUserById(int(idInteger))
+    if err != nil {
+        errResp.HttpStatus = http.StatusInternalServerError
+        errResp.Details.Code = API_CODE_USER
+        errResp.Details.Msg = fmt.Sprintf("Internal Server Error - %s", err.Error())
+        return
+    }
+
+    // some custom message
+    if rowsAffected == 0 {
+        errResp.HttpStatus = http.StatusNotFound
+        errResp.Details.Code = API_CODE_USER
+        errResp.Details.Msg = fmt.Sprintf("Content not found - no such user with id = %d", idInteger)
+        return
+    }
+
+    errResp.HttpStatus = http.StatusOK
+    errResp.Details.Code = API_CODE_USER
+    errResp.Details.Msg = fmt.Sprintf("Success - %d rows affected", rowsAffected)
 
     return
 }

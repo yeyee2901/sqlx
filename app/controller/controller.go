@@ -1,6 +1,4 @@
-// TODO ------
-// - CreateUser
-// - DeleteUserById
+// TODO: ------
 // - UpdateUserById
 package controller
 
@@ -86,9 +84,17 @@ func (T *Controller) CreateUser(ctx *gin.Context) {
 // @Param id path int true "User ID (angka positif)"
 // @Success 200 {object} entity.Response
 func (T *Controller) DeleteUserById(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{
-		"msg": "in progress",
-	})
+    ds := datasource.NewDatasource(T.Config, T.DB)
+    userService := user.NewUserService(ds, ctx)
+
+    errResp := userService.DeleteUserById()
+    if errResp.HttpStatus != http.StatusOK {
+        ctx.AbortWithStatusJSON(errResp.HttpStatus, errResp.Details)
+        return
+    }
+
+    ctx.JSON(http.StatusOK, errResp.Details)
+    return
 }
 
 // UpdateUserById godoc
