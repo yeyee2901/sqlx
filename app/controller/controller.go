@@ -26,8 +26,6 @@ func New(r *gin.Engine, c *config.Config, db *sqlx.DB) *Controller {
 }
 
 func (T *Controller) InitRouting() {
-	// Endpoint GET sebisa mungkin singular (bukan plural)
-	// yang membedakan get all & get sesuai kriteria dari params nya aja
 	T.Router.GET("/user", T.GetUser)
 	T.Router.POST("/user", T.CreateUser)
 	T.Router.PUT("/user", T.UpdateUserById)
