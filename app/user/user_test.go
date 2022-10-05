@@ -24,8 +24,12 @@ func TestGetUser(t *testing.T) {
 			// assert http status = 200
 			Name: "Exist_HttpStatus",
 			TestFunction: func(t *testing.T) {
-				idQuery := "?id=4"
-				req, _ := http.NewRequest("GET", path+idQuery, nil)
+				req, _ := http.NewRequest("GET", path, nil)
+
+                // add query string
+                query := req.URL.Query()
+                query.Add("id", "4")
+                req.URL.RawQuery = query.Encode()
 
 				resp, err := client.Do(req)
 				if err != nil {
@@ -42,8 +46,12 @@ func TestGetUser(t *testing.T) {
 			// assert http status = 404
 			Name: "NotExist_HttpStatus",
 			TestFunction: func(t *testing.T) {
-				idQuery := "?id=10000"
-				req, _ := http.NewRequest("GET", path+idQuery, nil)
+				req, _ := http.NewRequest("GET", path, nil)
+
+                // add query string
+                query := req.URL.Query()
+                query.Add("id", "100000")
+                req.URL.RawQuery = query.Encode()
 
 				resp, err := client.Do(req)
 				if err != nil {
